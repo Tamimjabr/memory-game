@@ -40,9 +40,6 @@ template.innerHTML = `
   :host([hidden]) #tile>* {
         visibility: hidden;
     }
-
-
-
   #tile[disabled]{
       cursor: default;
       pointer-events: none;
@@ -50,9 +47,6 @@ template.innerHTML = `
       border-style: dashed;
       border-color: #858585;
     }
-    
-
-
   #tile{
     display:inline-block;
     height:100%;
