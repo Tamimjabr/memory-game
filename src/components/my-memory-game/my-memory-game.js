@@ -114,10 +114,15 @@ customElements.define('my-memory-game',
      * Called after the element is inserted into the DOM.
      */
     connectedCallback () {
+      // if boardsize attribute is not specified give it the value large
       if (!this.hasAttribute('boardsize')) {
         this.setAttribute('boardsize', 'large')
       }
       this._upgradeProperty('boardsize')
+
+      this._gameBoard.addEventListener('tileflip', this._onTileFlip.bind(this))
+      this.addEventListener('dragstart', this._onDragStart)
+      this.addEventListener('gameover', this._onGameOver)
     }
 
     /**
@@ -137,7 +142,8 @@ customElements.define('my-memory-game',
      * Called after the element has been removed from the DOM.
      */
     disconnectedCallback () {
-
+      this._gameBoard.removeEventListener('tileflip', this._onTileFlip.bind(this))
+      this.removeEventListener('dragstart', this._onDragStart)
     }
 
     /**
@@ -202,7 +208,8 @@ customElements.define('my-memory-game',
       // the number of the tiles ex. 4*4=16
       const tilesCount = width * height
       console.log(tilesCount)
-
+      // clean the board
+      this._gameBoard.innerHTML = ''
       // if the new number of tiles given not equal the existing one
       if (tilesCount !== this._tiles.all.length) {
         // remove the tiles from the board
@@ -247,6 +254,80 @@ customElements.define('my-memory-game',
         // todo check if necessary
         tile.faceUp = tile.disabled = tile.hidden = false
       })
+    }
+
+    /**
+     * Handles flip events.
+     *
+     * @param {CustomEvent} event - The custom event.
+     */
+    _onTileFlip (event) {
+      const tiles = this._tiles
+      const tilesToDisable = Array.from(tiles.faceUp)
+      console.log(tilesToDisable)
+      // if there is more than one tile open, disable all other cards to prevent opening 3 cards
+      if (tilesToDisable.length > 1) {
+        tilesToDisable.push(...tiles.faceDown)
+      }
+      console.log(tilesToDisable)
+      tilesToDisable.forEach(tile => tile.setAttribute('disabled', ''))
+      const [first, second, ...tilesToEnable] = tilesToDisable
+
+      // if there is two cards
+      if (second) {
+        const isEqual = first.isEqual(second)
+        const delay = isEqual ? 1000 : 1500
+        window.setTimeout(() => {
+          let eventName = 'tilesmismatch'
+          if (isEqual) {
+            first.setAttribute('hidden', '')
+            second.setAttribute('hidden', '')
+            eventName = 'tilesmatch'
+          } else {
+            // if they are not equal put back them and push to the array with tiles to enable
+            first.removeAttribute('face-up')
+            second.removeAttribute('face-up')
+            tilesToEnable.push(first, second)
+          }
+          // todo check what happens when remove
+          this.dispatchEvent(new CustomEvent(eventName, {
+            bubbles: true,
+            detail: { first, second }
+          }))
+          // check if it was the last one and all tiles are hidden
+          if (tiles.all.every(tile => tile.hidden)) {
+            tiles.all.forEach(tile => (tile.disabled = true))
+            //! the game is over
+            this.dispatchEvent(new CustomEvent('gameover', {
+              bubbles: true
+            }))
+            this._init()
+          } else {
+            tilesToEnable.forEach(tile => (tile.removeAttribute('disabled')))
+          }
+        }, delay)
+      }
+    }
+
+    /**
+     * Handles drag start events. This is needed to prevent the
+     * dragging of tiles.
+     *
+     * @param {DragEvent} event - The drag event.
+     */
+    _onDragStart (event) {
+      // Disable element dragging.
+      event.preventDefault()
+      event.stopPropagation()
+    }
+
+    /**
+     * Handle when the game is over.
+     *
+     * @param {CustomEvent} event - The custom event.
+     */
+    _onGameOver (event) {
+      alert('Thanks')
     }
   }
 )
