@@ -59,6 +59,7 @@ template.innerHTML = `
   <div id='game-board'>
   </div>
   <h2 id='score'></h2>
+  <button id='playAgain'>Play again</button>
 
 `
 
@@ -84,6 +85,7 @@ customElements.define('my-memory-game',
       this._gameBoard = this.shadowRoot.querySelector('#game-board')
       this._tileTemplate = this.shadowRoot.querySelector('#tile-template')
       this._scoreBoard = this.shadowRoot.querySelector('#score')
+      this._playBtn = this.shadowRoot.querySelector('#playAgain')
       // to count the attempts to finish the game
       this._attempts = 0
     }
@@ -129,9 +131,10 @@ customElements.define('my-memory-game',
       this.addEventListener('dragstart', this._onDragStart)
       // fired at the end of the game
       this.addEventListener('gameover', this._onGameOver)
-
+      // when the tiles match or mismatch
       this.addEventListener('tilesmismatch', this._handleMismatch)
       this.addEventListener('tilesmatch', this._handleMatch)
+      this._playBtn.addEventListener('click', this._handlePlayAgain.bind(this))
     }
 
     /**
@@ -151,8 +154,12 @@ customElements.define('my-memory-game',
      * Called after the element has been removed from the DOM.
      */
     disconnectedCallback () {
-      this._gameBoard.removeEventListener('tileflip', this._onTileFlip.bind(this))
+      this._gameBoard.removeEventListener('tileflip', this._onTileFlip)
       this.removeEventListener('dragstart', this._onDragStart)
+      this.removeEventListener('gameover', this._onGameOver)
+      this.removeEventListener('tilesmismatch', this._handleMismatch)
+      this.removeEventListener('tilesmatch', this._handleMatch)
+      this._playBtn.removeEventListener('click', this._handlePlayAgain)
     }
 
     /**
@@ -356,6 +363,22 @@ customElements.define('my-memory-game',
     _handleMatch (event) {
       this._attempts++
       console.log(this._attempts)
+    }
+
+    /**
+     * Handles click on "Play again".
+     *
+     * @param {MouseEvent} event - The custom event.
+     */
+    _handlePlayAgain (event) {
+      const tiles = this._tiles
+      const tilesToEnable = Array.from(tiles.all)
+      console.log(tilesToEnable)
+      tilesToEnable.forEach(tile => {
+        tile.removeAttribute('disabled')
+        tile.removeAttribute('face-up')
+      })
+      this._init()
     }
   }
 
