@@ -17,7 +17,6 @@ const IMG_URLS = new Array(NUMBER_OF_IMAGES)
 for (let i = 0; i < NUMBER_OF_IMAGES; i++) {
   IMG_URLS[i] = (new URL(`images/${i}.png`, import.meta.url)).href
 }
-console.log(IMG_URLS)
 
 /*
  * Define template.
@@ -48,6 +47,9 @@ template.innerHTML = `
     background-position: center/80%;
     background-color: teal;
     }
+    h2{
+      text-align: center;
+    }
   </style>
   <template id='tile-template'>
     <my-flipping-tile>
@@ -55,8 +57,8 @@ template.innerHTML = `
     </my-flipping-tile>
   </template>
   <div id='game-board'>
-
   </div>
+  <h2 id='score'></h2>
 
 `
 
@@ -81,6 +83,9 @@ customElements.define('my-memory-game',
 
       this._gameBoard = this.shadowRoot.querySelector('#game-board')
       this._tileTemplate = this.shadowRoot.querySelector('#tile-template')
+      this._scoreBoard = this.shadowRoot.querySelector('#score')
+      // to count the attempts to finish the game
+      this._attempts = 0
     }
 
     /**
@@ -122,7 +127,11 @@ customElements.define('my-memory-game',
 
       this._gameBoard.addEventListener('tileflip', this._onTileFlip.bind(this))
       this.addEventListener('dragstart', this._onDragStart)
+      // fired at the end of the game
       this.addEventListener('gameover', this._onGameOver)
+
+      this.addEventListener('tilesmismatch', this._handleMismatch)
+      this.addEventListener('tilesmatch', this._handleMatch)
     }
 
     /**
@@ -208,24 +217,23 @@ customElements.define('my-memory-game',
       // the number of the tiles ex. 4*4=16
       const tilesCount = width * height
       console.log(tilesCount)
-      // clean the board
-      this._gameBoard.innerHTML = ''
+
       // if the new number of tiles given not equal the existing one
       if (tilesCount !== this._tiles.all.length) {
         // remove the tiles from the board
         this._gameBoard.innerHTML = ''
-      }
 
-      // add class small if the width ===2, means two columns
-      if (width === 2) {
-        this._gameBoard.classList.add('small')
-      } else {
-        this._gameBoard.classList.remove('small')
-      }
+        // add class small if the width ===2, means two columns
+        if (width === 2) {
+          this._gameBoard.classList.add('small')
+        } else {
+          this._gameBoard.classList.remove('small')
+        }
 
-      // add tiles to the  game board, but they are only with back face, we have to add images to front face at next step
-      for (let i = 0; i < tilesCount; i++) {
-        this._gameBoard.appendChild(this._tileTemplate.content.cloneNode(true))
+        // add tiles to the  game board, but they are only with back face, we have to add images to front face at next step
+        for (let i = 0; i < tilesCount; i++) {
+          this._gameBoard.appendChild(this._tileTemplate.content.cloneNode(true))
+        }
       }
 
       // Create a sequence of numbers between 0 and 15,
@@ -327,7 +335,28 @@ customElements.define('my-memory-game',
      * @param {CustomEvent} event - The custom event.
      */
     _onGameOver (event) {
-      alert('Thanks')
+      this._scoreBoard.textContent = `Your number of attempts: ${this._attempts}`
+    }
+
+    /**
+     * Handles tilesmismatch events .
+     *
+     * @param {CustomEvent} event - The custom event.
+     */
+    _handleMismatch (event) {
+      this._attempts++
+      console.log(this._attempts)
+    }
+
+    /**
+     * Handles tilesmatch events.
+     *
+     * @param {CustomEvent} event - The custom event.
+     */
+    _handleMatch (event) {
+      this._attempts++
+      console.log(this._attempts)
     }
   }
+
 )
