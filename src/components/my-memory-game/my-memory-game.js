@@ -45,11 +45,25 @@ template.innerHTML = `
     background-image: url("${IMG_URLS[0]}");
     background-repeat: no-repeat;
     background-position: center/80%;
-    background-color: teal;
+    background-color:  rgb(233, 210, 109);
     }
     h2{
-      text-align: center;
+    text-align: center;
     }
+    button{
+    margin: 10px;
+    padding:10px;
+    background-color: green;
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    font-size:1.2rem;
+    border-radius:10px;
+    outline: none;
+    color:white
+  }
+  button:focus{
+    color:green;
+    background-color:white;
+  }
   </style>
   <template id='tile-template'>
     <my-flipping-tile>
@@ -58,9 +72,8 @@ template.innerHTML = `
   </template>
   <div id='game-board'>
   </div>
+  <button id='playAgain'>Play again</button>  
   <h2 id='score'></h2>
-  <button id='playAgain'>Play again</button>
-
 `
 
 /*
@@ -223,7 +236,6 @@ customElements.define('my-memory-game',
       const { width, height } = this._gameBoardSize
       // the number of the tiles ex. 4*4=16
       const tilesCount = width * height
-      console.log(tilesCount)
 
       // if the new number of tiles given not equal the existing one
       if (tilesCount !== this._tiles.all.length) {
@@ -304,7 +316,6 @@ customElements.define('my-memory-game',
             second.removeAttribute('face-up')
             tilesToEnable.push(first, second)
           }
-          // todo check what happens when remove
           this.dispatchEvent(new CustomEvent(eventName, {
             bubbles: true,
             detail: { first, second }
@@ -352,7 +363,6 @@ customElements.define('my-memory-game',
      */
     _handleMismatch (event) {
       this._attempts++
-      console.log(this._attempts)
     }
 
     /**
@@ -362,7 +372,6 @@ customElements.define('my-memory-game',
      */
     _handleMatch (event) {
       this._attempts++
-      console.log(this._attempts)
     }
 
     /**
@@ -371,6 +380,8 @@ customElements.define('my-memory-game',
      * @param {MouseEvent} event - The custom event.
      */
     _handlePlayAgain (event) {
+      this._attempts = 0
+      this._scoreBoard.textContent = ''
       const tiles = this._tiles
       const tilesToEnable = Array.from(tiles.all)
       console.log(tilesToEnable)

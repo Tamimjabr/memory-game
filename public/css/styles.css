@@ -4,6 +4,7 @@ body {
     flex-direction: column;
     justify-content: center;
     align-items: center; 
-    background-color: gray;
+    background-color: rgb(228, 198, 198);
+
  
 }
