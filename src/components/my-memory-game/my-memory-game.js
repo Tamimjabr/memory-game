@@ -373,7 +373,7 @@ customElements.define('my-memory-game',
     }
 
     /**
-     * Handles tilesmismatch events .
+     * Handles tilesmismatch events.
      *
      * @param {CustomEvent} event - The custom event.
      */
