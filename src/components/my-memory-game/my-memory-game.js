@@ -70,6 +70,11 @@ template.innerHTML = `
       <img />
     </my-flipping-tile>
   </template>
+  <div>
+  <button id='large'>Large</button>  
+  <button id='medium'>Medium</button>  
+  <button id='small'>Small</button>  
+  </div>
   <div id='game-board'>
   </div>
   <button id='playAgain'>Play again</button>  
@@ -101,6 +106,10 @@ customElements.define('my-memory-game',
       this._playBtn = this.shadowRoot.querySelector('#playAgain')
       // to count the attempts to finish the game
       this._attempts = 0
+      // buttons to change the size
+      this._largeBtn = this.shadowRoot.querySelector('#large')
+      this._mediumBtn = this.shadowRoot.querySelector('#medium')
+      this._smallBtn = this.shadowRoot.querySelector('#small')
     }
 
     /**
@@ -148,6 +157,10 @@ customElements.define('my-memory-game',
       this.addEventListener('tilesmismatch', this._handleMismatch)
       this.addEventListener('tilesmatch', this._handleMatch)
       this._playBtn.addEventListener('click', this._handlePlayAgain.bind(this))
+      // add evnet listner for size buttons
+      this._largeBtn.addEventListener('click', this._clickLargeBtn.bind(this))
+      this._mediumBtn.addEventListener('click', this._clickMediumBtn.bind(this))
+      this._smallBtn.addEventListener('click', this._clickSmallBtn.bind(this))
     }
 
     /**
@@ -173,6 +186,9 @@ customElements.define('my-memory-game',
       this.removeEventListener('tilesmismatch', this._handleMismatch)
       this.removeEventListener('tilesmatch', this._handleMatch)
       this._playBtn.removeEventListener('click', this._handlePlayAgain)
+      this._largeBtn.removeEventListener('click', this._clickLargeBtn)
+      this._mediumBtn.removeEventListener('click', this._clickMediumBtn)
+      this._smallBtn.removeEventListener('click', this._clickSmallBtn)
     }
 
     /**
@@ -390,6 +406,33 @@ customElements.define('my-memory-game',
         tile.removeAttribute('face-up')
       })
       this._init()
+    }
+
+    /**
+     * Handles click on "Large" button.
+     *
+     * @param {MouseEvent} event - The custom event.
+     */
+    _clickLargeBtn (event) {
+      this.setAttribute('boardsize', 'large')
+    }
+
+    /**
+     * Handles click on "Medium" button.
+     *
+     * @param {MouseEvent} event - The custom event.
+     */
+    _clickMediumBtn (event) {
+      this.setAttribute('boardsize', 'medium')
+    }
+
+    /**
+     * Handles click on "Small" button.
+     *
+     * @param {MouseEvent} event - The custom event.
+     */
+    _clickSmallBtn (event) {
+      this.setAttribute('boardsize', 'small')
     }
   }
 
