@@ -17,6 +17,36 @@ Default value: large
 | `tilesmatch`    | The tiles facing up match.        |
 | `tilesmismatch` | The tiles facing up do not match. |
 | `gameover`      | The game is over.                 |
+| `click`         | Click on "Play again" button.     |
+| `click`         | Click on "Large" button.          |
+| `click`         | Click on "Medium" button.         |
+| `click`         | Click on "Small" button.          |
+
+## Examples
+
+To use:
+
+## In HTML
+Add the module using the script tag in the head-element:
+```HTML
+  <script type="module" src="js/components/my-memory-game/my-memory-game.js"></script>
+```
+
+Add the element to the html:
+```HTML
+<my-memory-game></my-memory-game>
+```
+
+## In Javascript
+Load the module
+```Javascript
+import './components/my-memory-game'
+```
+Create a component using the standard DOM-api:
+```Javascript
+const memoryGame = document.createElement('my-memory-game')
+
+![Example](./.readme/example.gif)
 
 ## Example
 
@@ -25,4 +55,4 @@ Default value: large
 </my-memory-gam>
 ```
 
-![Example](./.readme/example.gif)
+
