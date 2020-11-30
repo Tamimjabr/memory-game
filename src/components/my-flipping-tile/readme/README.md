@@ -1,20 +1,20 @@
 # &lt;my-flipping-tile&gt;
-A webcomponent that represent a tile with two faces. the tile has a 3D-effect when flipping
+A webcomponent that represent a tile with two faces. the tile has a 3D-effect when flipping.
 
 ## Attributes
 
 ### `face-up`
-An attribute; that, if specified means that the tile will show its front face.
+A Boolean attribute; that, if specified means that the tile will show its front face.
 
 Default value: false
 
 ### `disabled`
-An attribute; that, if specified means that the tile will appear with dashed border around and you won't be able to flip it.
+A Boolean attribute which, if present, indicates that the user should not be able to interact with the element.The tile will appear with dashed border around and you won't be able to flip it.
 
 Default value: false
 
 ### `hidden`
-An attribute; that, if specified means that the tile will appear empty on both faces
+A Boolean attribute; that, if specified means that the tile will appear empty on both faces
 
 Default value: false
 
@@ -28,19 +28,6 @@ Parameters: `other` a node to compare
 
 Returns: Boolean(true/false).
 
-### `_onClick (event)`
-A method to handle clicking on the tile, by checking if it's the key Enter or the left mouse button and call a method to flip the tile if it was one of them.
-
-Parameters: event
-
-Returns: undefined.
-
-### `_flip ()`
-A method when called, will flip the tile if the tile doesn't has one of the attributes ['hidden', 'disabled'], and dispatch an event called 'tileflip'
-
-Parameters: none
-
-Returns: undefined.
 
 ## slots
 the component accepts an unnamed slot and place it in the front face of the tile 
@@ -50,7 +37,6 @@ the component accepts an unnamed slot and place it in the front face of the tile
 | Event Name | Fired When |
 |------------|------------|
 | 'tileflip'| The tile is flipped.
-| 'click'| The tile is clicked.
 
 ## Styling with CSS
 The tile (button) is styleable using the part `tile-main`
